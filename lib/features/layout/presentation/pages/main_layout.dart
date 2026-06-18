@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mindsense/features/Auth/presentation/pages/home_Page.dart';
-// استدعاء شاشة الهوم اللي عملناها
+import 'package:mindsense/features/analytics/presentation/pages/session_summary_page.dart';
+import 'package:mindsense/features/chat/presentation/pages/ai_chat_page.dart';
+import 'package:mindsense/features/profile/presentation/pages/profile_page.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -14,12 +16,11 @@ class _MainLayoutState extends State<MainLayout> {
   // متغير لتتبع إحنا واقفين في أي تابة
   int _currentIndex = 0;
 
-  // لستة الشاشات اللي هنتنقل بينها (الباقي Placeholder لحد ما نعملهم)
-  final List<Widget> _screens = [
+  List<Widget> get _screens => [
     const HomePage(),
-    const Scaffold(body: Center(child: Text("Chat Screen 💬"))),
-    const Scaffold(body: Center(child: Text("Analytics Screen 📊"))),
-    const Scaffold(body: Center(child: Text("Profile Screen 👤"))),
+    const AiChatPage(),
+    SessionSummaryPage(onClose: () => setState(() => _currentIndex = 0)),
+    const ProfilePage(),
   ];
 
   @override
@@ -41,10 +42,10 @@ class _MainLayoutState extends State<MainLayout> {
             ),
           ],
           // عشان لو حابب تخلي الحواف اللي فوق دائرية شوية
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(70.r)),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(70.r)),
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mindsense/features/Auth/presentation/pages/home_Page.dart';
-import 'package:mindsense/features/clinician/presentation/pages/clinician_dashboard.dart';
 import 'package:mindsense/features/Auth/presentation/pages/splash_page.dart';
 
 void main() {
@@ -29,7 +27,7 @@ class MindSenseApp extends StatelessWidget {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          home: const ClinicianDashboard(),
+          home: const SplashPage(),
         );
       },
     );

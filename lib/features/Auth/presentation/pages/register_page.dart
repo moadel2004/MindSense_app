@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mindsense/features/layout/presentation/pages/main_layout.dart';
 import '../widgets/auth_field.dart';
-import 'register_page.dart';
+import '../widgets/role_selector.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  // القيمة الافتراضية للتسجيل هي مريض
+  UserRole _selectedRole = UserRole.patient;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +30,7 @@ class LoginPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(16.r),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF6C63FF),
+                  color: const Color(0xFF6C63FF), // لون خلفية اللوجو
                   borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Icon(Icons.psychology, color: Colors.white, size: 40.sp),
@@ -39,13 +47,29 @@ class LoginPage extends StatelessWidget {
 
               SizedBox(height: 32.h),
 
-              // 2. Login/SignUp Toggle
+              // 2. Login / Sign Up Toggle
               _buildAuthToggle(context),
 
-              // مسافة أكبر شوية عشان شيلنا الكارت بتاع الرول
-              SizedBox(height: 40.h),
+              SizedBox(height: 24.h),
 
-              // 3. Form (Email & Password Only)
+              // 3. Role Selector (تحديد نوع الحساب)
+              RoleSelector(
+                selectedRole: _selectedRole,
+                onRoleChanged: (newRole) {
+                  setState(() {
+                    _selectedRole = newRole;
+                  });
+                },
+              ),
+
+              SizedBox(height: 24.h),
+
+              // 4. Input Fields (حقول الإدخال)
+              const AuthField(
+                hintText: "Full Name",
+                prefixIcon: Icons.person_outline,
+              ),
+              SizedBox(height: 16.h),
               const AuthField(
                 hintText: "you@example.com",
                 prefixIcon: Icons.email_outlined,
@@ -58,30 +82,14 @@ class LoginPage extends StatelessWidget {
                 suffixIcon: Icon(Icons.visibility_off_outlined),
               ),
 
-              // 4. Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      color: const Color(0xFF3D31FF),
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
+              SizedBox(height: 32.h),
 
-              SizedBox(height: 16.h),
-
-              // 5. Login Button
-              _buildLoginButton(context),
+              // 5. Sign Up Button (Gradient Button)
+              _buildRegisterButton(),
 
               SizedBox(height: 24.h),
 
-              // 6. Divider
+              // 6. Divider (Or continue with)
               Row(
                 children: [
                   Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -116,9 +124,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  // --- Helper Widgets ---
+
   Widget _buildAuthToggle(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(4.w),
+      padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F8FA),
         borderRadius: BorderRadius.circular(12.r),
@@ -126,10 +136,37 @@ class LoginPage extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
+            child: GestureDetector(
+              onTap: () {
+                // العودة لصفحة تسجيل الدخول
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                decoration: BoxDecoration(
+                  color: Colors.transparent, // غير محدد
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Center(
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 12.h),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.white, // محدد
                 borderRadius: BorderRadius.circular(10.r),
                 boxShadow: [
                   BoxShadow(
@@ -140,36 +177,10 @@ class LoginPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Login",
+                  "Sign Up",
                   style: TextStyle(
-                    color: const Color(0xFF3D31FF),
+                    color: const Color(0xFF6C63FF),
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Center(
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontWeight: FontWeight.w500,
-                    ),
                   ),
                 ),
               ),
@@ -180,13 +191,16 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoginButton(BuildContext context) {
+  Widget _buildRegisterButton() {
     return Container(
       width: double.infinity,
       height: 55.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF90CAF9), Color(0xFF607D8B)],
+          colors: [
+            Color(0xFF90CAF9),
+            Color(0xFF607D8B),
+          ], // التدرج اللوني المطابق للصورة الجديدة
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -194,10 +208,7 @@ class LoginPage extends StatelessWidget {
       ),
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainLayout()),
-          );
+          // اللوجيك الخاص بإنشاء الحساب
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -210,7 +221,7 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Login",
+              "Sign Up",
               style: TextStyle(
                 fontSize: 16.sp,
                 color: Colors.white,
@@ -231,6 +242,7 @@ class LoginPage extends StatelessWidget {
         Expanded(
           child: OutlinedButton.icon(
             onPressed: () {},
+            // استبدل الأيقونة بصورة جوجل الحقيقية من الـ assets إذا توفرت
             icon: Icon(Icons.g_mobiledata, color: Colors.black87, size: 28.sp),
             label: Text(
               "Google",
@@ -273,11 +285,11 @@ class LoginPage extends StatelessWidget {
       text: TextSpan(
         style: TextStyle(color: Colors.grey.shade500, fontSize: 11.sp),
         children: [
-          const TextSpan(text: "By logging in, you agree to our "),
+          const TextSpan(text: "By signing up, you agree to our "),
           TextSpan(
             text: "Terms",
             style: TextStyle(
-              color: const Color(0xFF3D31FF),
+              color: const Color(0xFF6C63FF),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -285,7 +297,7 @@ class LoginPage extends StatelessWidget {
           TextSpan(
             text: "Privacy Policy",
             style: TextStyle(
-              color: const Color(0xFF3D31FF),
+              color: const Color(0xFF6C63FF),
               fontWeight: FontWeight.w600,
             ),
           ),

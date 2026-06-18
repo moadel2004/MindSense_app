@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mindsense/features/Auth/presentation/pages/On_boarding_Page.dart';
-import 'package:mindsense/features/Auth/presentation/pages/login_Page.dart';
 import '../../../../core/utils/app_assets.dart';
 
 class SplashPage extends StatefulWidget {
